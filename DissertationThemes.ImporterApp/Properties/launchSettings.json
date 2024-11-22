@@ -2,7 +2,7 @@
   "profiles": {
     "DissertationThemes.ImporterApp": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\Users\\Michal\\Downloads\\phd_temy.csv"
+      "commandLineArgs": "C:\\Users\\micha\\Downloads\\phd_temy.csv"
     }
   }
 }

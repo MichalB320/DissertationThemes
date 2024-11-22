@@ -19,7 +19,7 @@ public class IS
 
             StProgram stp = CreateStProgram(colls[3], colls[2]);
             Supervisor supervisor = CreateSupervisor(colls[1]);
-            Theme theme = CreateTheme(colls[8], colls[6], bool.Parse(colls[5]), bool.Parse(colls[4]), colls[0], stp, supervisor);
+            Theme theme = CreateTheme(colls[8], colls[7], bool.Parse(colls[5]), bool.Parse(colls[4]), colls[0], stp, supervisor);
 
             if (db.Themes.FirstOrDefault(t => t.Name == theme.Name && t.StProgram.Id == stp.Id && t.Supervisor.Id == supervisor.Id) == null)
                 db.Themes.Add(theme);

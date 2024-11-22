@@ -10,6 +10,6 @@ namespace DissertationThemes.ImporterApp
         public DbSet<Supervisor> Supervisors { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseSqlite("Data Source=C:\\Users\\Michal\\source\\repos\\DissertationThemes\\DissertationThemes.ImporterApp\\DisertationThemes.db");
+            => optionsBuilder.UseSqlite("Data Source=C:\\Users\\micha\\source\\repos\\DissertationThemes\\DissertationThemes.ImporterApp\\DisertationThemes.db");
     }
 }

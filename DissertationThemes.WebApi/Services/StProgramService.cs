@@ -6,12 +6,7 @@ namespace DissertationThemes.WebApi.Services;
 
 public class StProgramService
 {
-    private readonly List<StProgramDTO> _stPrograms; //= new List<StProgramDTO>
-        //{
-        //    new StProgramDTO { Id = 1, Name = "aplikovaná informatika", FieldOfStudy = "9.2.9 aplikovaná informatika" },
-        //    new StProgramDTO { Id = 3, Name = "inteligentné informačné systémy", FieldOfStudy = "9.2.6 informačné systémy" },
-        //    new StProgramDTO { Id = 4, Name = "manažment", FieldOfStudy = "3.3.15 manažment" }
-        //};
+    private readonly List<StProgramDTO> _stPrograms;
 
     public StProgramService()
     {
