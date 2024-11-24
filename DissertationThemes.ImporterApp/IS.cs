@@ -1,5 +1,4 @@
 ﻿using DissertationThemes.SharedLibrary;
-using Microsoft.EntityFrameworkCore;
 
 namespace DissertationThemes.ImporterApp;
 
@@ -19,7 +18,7 @@ public class IS
 
             StProgram stp = CreateStProgram(colls[3], colls[2]);
             Supervisor supervisor = CreateSupervisor(colls[1]);
-            Theme theme = CreateTheme(colls[8], colls[7], bool.Parse(colls[5]), bool.Parse(colls[4]), colls[0], stp, supervisor);
+            Theme theme = CreateTheme(colls[8], colls[7], bool.Parse(colls[5]), bool.Parse(colls[4]), colls[0], stp, supervisor, colls[6]);
 
             if (db.Themes.FirstOrDefault(t => t.Name == theme.Name && t.StProgram.Id == stp.Id && t.Supervisor.Id == supervisor.Id) == null)
                 db.Themes.Add(theme);
@@ -49,7 +48,7 @@ public class IS
         return stp;
     }
 
-    private Theme CreateTheme(string paCreated, string description, bool isExternalStudy, bool isFullTimeStudy, string paName, StProgram stp, Supervisor supervisor)
+    private Theme CreateTheme(string paCreated, string description, bool isExternalStudy, bool isFullTimeStudy, string paName, StProgram stp, Supervisor supervisor, string researchType)
     {
         var created = paCreated;
         var dateTime = created.Split(' ');
@@ -68,11 +67,22 @@ public class IS
             IsExternalStudy = isExternalStudy,
             IsFullTimeStudy = isFullTimeStudy,
             Name = paName,
-            ResearchType = ResearchType.BasicResearch,
-
             StProgram = stp,
             Supervisor = supervisor
         };
+
+        switch (researchType)
+        {
+            case "základný výskum":
+                theme.ResearchType = ResearchType.BasicResearch;
+                break;
+            case "aplikovaný výskum":
+                theme.ResearchType = ResearchType.AppliedResearch;
+                break;
+            case "aplikovaný výskum a experimentálny vývoj":
+                theme.ResearchType = ResearchType.AppliedResearchExpDevelopment;
+                break;
+        }
 
         return theme;
     }
@@ -99,8 +109,6 @@ public class IS
             dbContext.SaveChanges();
         }
     }
-
-    
 
     public void ShowAll()
     {

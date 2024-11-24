@@ -11,4 +11,7 @@ public class ThemeDTO
     public bool IsFullTimeStudy { get; set; }
     public string Name { get; set; }
     public ResearchType ResearchType { get; set; }
+
+    public StProgramDTO StProgramDTO { get; set; }
+    public SupervisorDTO SupervisorDTO { get; set; }
 }

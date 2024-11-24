@@ -1,6 +1,7 @@
 ﻿using DissertationThemes.ImporterApp;
 using DissertationThemes.WebApi.DTOs;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace DissertationThemes.WebApi.Services;
 
@@ -23,12 +24,15 @@ public class ThemeService
 
             return new ThemeDTO()
             {
-                Created = theme.Created,
-                Description = theme.Description,
                 Id = theme.Id,
-                IsExternalStudy = theme.IsExternalStudy,
+                Name = theme.Name,
+                //TODO: supervisor
+                //TODO: supervisorId
                 IsFullTimeStudy = theme.IsFullTimeStudy,
-                Name = theme.Name
+                IsExternalStudy = theme.IsExternalStudy,
+                ResearchType = theme.ResearchType,
+                Description = theme.Description,
+                Created = theme.Created
             };
         }
     }
@@ -40,7 +44,6 @@ public class ThemeService
         using (var db = new DisertationThemesDbContext())
         {
             var themes = db.Themes;
-
             foreach (var theme in themes)
             {
                 if (list.Where(p => p.Created.Year == theme.Created.Year).Count() == 0)
@@ -54,11 +57,9 @@ public class ThemeService
                         IsFullTimeStudy = theme.IsFullTimeStudy,
                         Name = theme.Name
                     };
-
                     list.Add(themeDTO);
                 }
             }
-
             return list.OrderByDescending(p => p.Created);
         }
     }
@@ -81,13 +82,15 @@ public class ThemeService
             {
                 ThemeSupDTO themeSupDTO = new ThemeSupDTO()
                 {
-                    Created = theme.Created,
-                    Description = theme.Description,
                     Id = theme.Id,
-                    IsExternalStudy = theme.IsExternalStudy,
-                    IsFullTimeStudy = theme.IsFullTimeStudy,
                     Name = theme.Name,
-                    FullName = theme.Supervisor.FullName
+                    FullName = theme.Supervisor.FullName,
+                    //TODO: StProgramId
+                    IsFullTimeStudy = theme.IsFullTimeStudy,
+                    IsExternalStudy = theme.IsExternalStudy,
+                    ResearchType = theme.ResearchType,
+                    Description = theme.Description,
+                    Created = theme.Created
                 };
 
                 list.Add(themeSupDTO);
@@ -97,7 +100,7 @@ public class ThemeService
         }
     }
 
-    public IEnumerable<ThemeFullDTO> GetAllThemes(int? year, int? stProgramId)
+    public byte[] GetAllThemes(int? year, int? stProgramId)
     {
         List<ThemeFullDTO> list = new List<ThemeFullDTO>();
 
@@ -125,11 +128,25 @@ public class ThemeService
                     StProgram = theme.StProgram.Name,
                     FieldOfStudy =theme.StProgram.FieldOfStudy
                 };
-
                 list.Add(themeFullDTO);
             }
 
-            return list;
+            string csv = CreateCsv(list);
+            byte[] csvBytes = Encoding.UTF8.GetBytes(csv);
+
+            return csvBytes;
         }
+    }
+
+    private string CreateCsv(IEnumerable<ThemeFullDTO> themes)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.AppendLine("Name;Supervisor;StProgram;FieldOfStudy;IsFullTimeStudy;IsExternalStudy;ResearchType;Descrition;Created");
+        
+        foreach (var theme in themes)
+            sb.AppendLine($"{theme.Name};{theme.FullName};{theme.Name};{theme.FieldOfStudy};{theme.IsFullTimeStudy};{theme.IsExternalStudy};{theme.ResearchType};{theme.Description};{theme.Created}");
+
+        string csv = sb.ToString();
+        return csv;
     }
 }

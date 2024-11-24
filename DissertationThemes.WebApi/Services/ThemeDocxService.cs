@@ -2,6 +2,7 @@
 using DissertationThemes.SharedLibrary;
 using DissertationThemes.WebApi.DTOs;
 using Microsoft.EntityFrameworkCore;
+using Xceed.Words.NET;
 
 namespace DissertationThemes.WebApi.Services;
 
@@ -10,6 +11,7 @@ public class ThemeDocxService
     private readonly Theme _theme;
     private readonly StProgram _stProgram;
     private readonly Supervisor _supervisor;
+    private readonly int _id;
 
     public ThemeDocxService(int id) 
     {
@@ -23,7 +25,7 @@ public class ThemeDocxService
         }
     }
 
-    public ThemeDTO GetTheme()
+    private ThemeDTO GetTheme()
     {
         return new ThemeDTO()
         {
@@ -32,11 +34,12 @@ public class ThemeDocxService
             Id = _theme.Id,
             IsExternalStudy = _theme.IsExternalStudy,
             IsFullTimeStudy = _theme.IsFullTimeStudy,
+            ResearchType = _theme.ResearchType,
             Name = _theme.Name
         };
     }
 
-    public StProgramDTO GetStProgram()
+    private StProgramDTO GetStProgram()
     {
         return new StProgramDTO()
         {
@@ -46,12 +49,52 @@ public class ThemeDocxService
         };
     }
 
-    public SupervisorDTO GetSupervisor()
+    private SupervisorDTO GetSupervisor()
     {
         return new SupervisorDTO()
         {
             Id = _theme.Supervisor.Id,
             FullName = _theme.Supervisor.FullName
         };
+    }
+
+    public byte[] GetThemeDocx()
+    {
+        var themeDTO = GetTheme();
+        var supervisorDTO = GetSupervisor();
+        var stProgramDTO = GetStProgram();
+
+        string outputPath = Path.GetTempFileName();
+
+        System.IO.File.Copy("C:\\Users\\micha\\Downloads\\PhD_temy_sablona.docx", outputPath, true);
+
+        using (DocX document = DocX.Load(outputPath))
+        {
+            document.ReplaceText("#=ThemeName=#", themeDTO.Name);
+            document.ReplaceText("#=Supervisor=#", supervisorDTO.FullName);
+            document.ReplaceText("#=StProgram=#", stProgramDTO.Name);
+            document.ReplaceText("#=FieldOfStudy=#", stProgramDTO.FieldOfStudy);
+            switch (themeDTO.ResearchType)
+            {
+                case ResearchType.AppliedResearch:
+                    document.ReplaceText("#=ResearchType=#", "aplikovaný výskum");
+                    break;
+                case ResearchType.AppliedResearchExpDevelopment:
+                    document.ReplaceText("#=ResearchType=#", "aplikovaný experimentálny výskum");
+                    break;
+                case ResearchType.BasicResearch:
+                    document.ReplaceText("#=ResearchType=#", "základný výskum");
+                    break;
+            }
+            document.ReplaceText("#=ResearchType=#", themeDTO.ResearchType.ToString());
+            document.ReplaceText("#=Description=#", themeDTO.Description);
+
+            string modifiedFilePath = Path.Combine(Path.GetTempPath(), "modified_theme_233.docx");
+            document.SaveAs(modifiedFilePath);
+
+            byte[] fileBytes = System.IO.File.ReadAllBytes(modifiedFilePath);
+
+            return fileBytes;
+        } 
     }
 }

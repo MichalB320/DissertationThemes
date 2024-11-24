@@ -1,5 +1,4 @@
 ﻿using DissertationThemes.ImporterApp;
-using DissertationThemes.SharedLibrary;
 using DissertationThemes.WebApi.DTOs;
 
 namespace DissertationThemes.WebApi.Services;
@@ -33,7 +32,5 @@ public class StProgramService
     }
 
     public IEnumerable<StProgramDTO> GetAll()
-    {
-        return _stPrograms.OrderBy(sp => sp.Name);
-    }
+        => _stPrograms.OrderBy(sp => sp.Name);
 }
