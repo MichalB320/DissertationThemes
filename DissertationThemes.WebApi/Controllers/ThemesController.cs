@@ -29,7 +29,7 @@ public class ThemesController : ControllerBase
         var themeDocxService = new ThemeDocxService(id);
         byte[] fileBytes = themeDocxService.GetThemeDocx();
 
-        return File(fileBytes, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "theme_233.docx");
+        return File(fileBytes, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", $"theme_{id}.docx");
     }
 
     [HttpGet("themes/")]

@@ -4,51 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DissertationThemes.ViewerApp"
+        xmlns:view="clr-namespace:DissertationThemes.ViewerApp.Views"
+        xmlns:vm="clr-namespace:DissertationThemes.ViewerApp.ViewModels"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+        <Grid.Resources>
+            <DataTemplate DataType="{x:Type vm:FilterViewModel}">
+                <view:FilterView/>
+            </DataTemplate>
+        </Grid.Resources>
 
-        <Menu Grid.Row="0">
-            <MenuItem Header="File"/>
-            <MenuItem Header="Help"/>
-        </Menu>
-
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="auto"/>
-            </Grid.ColumnDefinitions>
-
-            <Grid Grid.Column="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
-                <StackPanel Grid.Row="0" Orientation="Horizontal">
-                    <TextBlock Text="Study program: "/>
-                    <ComboBox/>
-                    <TextBlock Text="Year: "/>
-                    <ComboBox/>
-                </StackPanel>
-
-                <ListView Grid.Row="1">
-                    
-                </ListView>
-            </Grid>
-            
-            <StackPanel Grid.Column="1">
-                <Button Content="Clear filter"/>
-                <Button Content="Show details..."/>
-                <Button Content="Generate to .docx..."/>
-            </StackPanel>
-            
-            
-        </Grid>
-
+        <ContentControl Content="{Binding CurrentViewModel}"/>
     </Grid>
 </Window>

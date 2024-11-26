@@ -1,5 +1,9 @@
 ﻿using DissertationThemes.ViewerApp.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -10,14 +14,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace DissertationThemes.ViewerApp
+namespace DissertationThemes.ViewerApp.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for FilterView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class FilterView : UserControl
     {
-        public MainWindow()
+        public FilterView()
         {
             InitializeComponent();
         }

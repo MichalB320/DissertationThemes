@@ -11,7 +11,6 @@ public class ThemeDocxService
     private readonly Theme _theme;
     private readonly StProgram _stProgram;
     private readonly Supervisor _supervisor;
-    private readonly int _id;
 
     public ThemeDocxService(int id) 
     {
@@ -89,7 +88,7 @@ public class ThemeDocxService
             document.ReplaceText("#=ResearchType=#", themeDTO.ResearchType.ToString());
             document.ReplaceText("#=Description=#", themeDTO.Description);
 
-            string modifiedFilePath = Path.Combine(Path.GetTempPath(), "modified_theme_233.docx");
+            string modifiedFilePath = Path.Combine(Path.GetTempPath(), $"modified_theme_{themeDTO.Id}.docx");
             document.SaveAs(modifiedFilePath);
 
             byte[] fileBytes = System.IO.File.ReadAllBytes(modifiedFilePath);

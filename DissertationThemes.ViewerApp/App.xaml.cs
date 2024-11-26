@@ -1,14 +1,22 @@
-﻿using System.Configuration;
-using System.Data;
+﻿using DissertationThemes.ViewerApp.ViewModels;
 using System.Windows;
 
-namespace DissertationThemes.ViewerApp
-{
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : Application
-    {
-    }
+namespace DissertationThemes.ViewerApp;
 
+/// <summary>
+/// Interaction logic for App.xaml
+/// </summary>
+public partial class App : Application
+{
+
+    protected override void OnStartup(StartupEventArgs e)
+    {
+        MainWindow = new MainWindow()
+        {
+            DataContext = new MainViewModel()
+        };
+        MainWindow.Show();
+
+        base.OnStartup(e);
+    }
 }
