@@ -4,8 +4,18 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DissertationThemes.ViewerApp.Views"
+             xmlns:components="clr-namespace:DissertationThemes.ViewerApp.Components"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <components:BoolTextConverter x:Key="BoolToTextConverter"/>
+        <Style TargetType="Button">
+            <Setter Property="Height" Value="23"/>
+            <Setter Property="Width" Value="110"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </UserControl.Resources>
+    
     <Grid Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -44,58 +54,39 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Grid.Column="0" Text="Study program: " Margin="5"/>
-                        <ComboBox Grid.Column="1" ItemsSource="{Binding StudyPrograms}" VerticalAlignment="Center" Margin="5" />
+                        <ComboBox Grid.Column="1" ItemsSource="{Binding StudyPrograms}" SelectedItem="{Binding SelectedStudyProgram}" VerticalAlignment="Center" Margin="5" />
 
                         <TextBlock Grid.Column="2" Text="Year: " Margin="5"/>
-                        <ComboBox Grid.Column="3" ItemsSource="{Binding ThemesYears}" VerticalAlignment="Center" Margin="5" Width="100"/>
+                        <ComboBox Grid.Column="3" ItemsSource="{Binding ThemesYears}" SelectedItem="{Binding SelectedYear, Mode=TwoWay}" VerticalAlignment="Center" Margin="5" Width="100"/>
                     </Grid>
                 </Grid>
 
                 <Grid Grid.Row="1">
-                    <DataGrid AutoGenerateColumns="False" HeadersVisibility="Column" CanUserAddRows="False" Margin="5,3,5,5">
-                        <DataGrid.Columns>
-                            
-                            <DataGridTemplateColumn Header="Theme" Width="*">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Theme}" TextWrapping="Wrap"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Header="Supervisor" Width="*">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Supervisor}" TextWrapping="Wrap"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
+                    <ListView ItemsSource="{Binding Themes}" SelectedItem="{Binding SelectedTheme, Mode=TwoWay}" IsSynchronizedWithCurrentItem="True" Margin="5,3,5,5">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Theme" DisplayMemberBinding="{Binding Name}" />
+                                <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Supervisor}" />
+                                <GridViewColumn Header="FullTimeStudy">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding IsFullTimeStudy, Converter={StaticResource BoolToTextConverter}}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="ExternalStudy">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding IsExternalStudy, Converter={StaticResource BoolToTextConverter}}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Created" DisplayMemberBinding="{Binding Created}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
 
-                            <DataGridTemplateColumn Header="Full Time Study" Width="Auto">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <CheckBox IsChecked="{Binding FullTimeStudy}" IsEnabled="False"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-
-                            <DataGridTemplateColumn Header="External Study" Width="Auto">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <CheckBox IsChecked="{Binding ExternalStudy}" IsEnabled="False"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-
-                            <DataGridTemplateColumn Header="Created" Width="*">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Created}" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
                 </Grid>
 
             </Grid>
@@ -107,14 +98,14 @@
                 </Grid.RowDefinitions>
                 
                 <StackPanel Grid.Row="0">
-                    <Button Content="Clear filter" Margin="5"/>
-                    <Button Content="Show details..."  Margin="5"/>
-                    <Button Content="Generate to .docx..."  Margin="5"/>
+                    <Button Content="Clear filter" Command="{Binding ClearCommand}" Margin="5"/>
+                    <Button Content="Show details..."  Margin="5" Command="{Binding ShowDetailsCommand}" IsEnabled="{Binding EnableButtons}"/>
+                    <Button Content="Generate to .docx..."  Margin="5" Command="{Binding GenereateToDocxCommand}" IsEnabled="{Binding EnableButtons}"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="1" VerticalAlignment="Bottom" Margin="5">
                     <TextBlock Text="Count:"/>
-                    <TextBlock Text="233"/>
+                    <TextBlock Text="{Binding Count}"/>
                 </StackPanel>
             </Grid>
             

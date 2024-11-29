@@ -68,15 +68,19 @@ public class ThemeService
     {
         List<ThemeSupDTO> list = new List<ThemeSupDTO>();
 
+        StProgramService stProgramService = new StProgramService();
+        List<StProgramDTO> stPrograms = stProgramService.GetAll();
+        string stProgramName = stPrograms.Where(c => c.Id == stProgramId).Select(s => s.Name).FirstOrDefault();
+
         using (var db = new DisertationThemesDbContext())
         {
-            var themes = db.Themes.Include(p => p.Supervisor).AsQueryable();
+            var themes = db.Themes.Include(p => p.Supervisor).Include(p => p.StProgram).AsQueryable();
 
             if (year.HasValue)
-                themes = themes.Include(p => p.Supervisor).Where(p => p.Created.Year == year);
+                themes = themes.Include(p => p.Supervisor).Include(p => p.StProgram).Where(p => p.Created.Year == year);
 
             if (stProgramId.HasValue)
-                themes = themes.Include(p => p.Supervisor).Where(p => p.StProgramId == stProgramId);
+                themes = themes.Include(p => p.Supervisor).Include(p => p.StProgram).Where(p => p.StProgram.Name == stProgramName);
 
             foreach (var theme in themes)
             {
@@ -85,7 +89,7 @@ public class ThemeService
                     Id = theme.Id,
                     Name = theme.Name,
                     FullName = theme.Supervisor.FullName,
-                    //TODO: StProgramId
+                    StProgramId = stPrograms.Where(c => c.Name == theme.StProgram.Name).Select(s => s.Id).FirstOrDefault(),
                     IsFullTimeStudy = theme.IsFullTimeStudy,
                     IsExternalStudy = theme.IsExternalStudy,
                     ResearchType = theme.ResearchType,

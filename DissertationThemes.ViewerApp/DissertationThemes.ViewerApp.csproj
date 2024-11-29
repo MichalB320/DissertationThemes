@@ -16,4 +16,8 @@
     <ProjectReference Include="..\DissertationThemes.ImporterApp\DissertationThemes.ImporterApp.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>

@@ -31,6 +31,6 @@ public class StProgramService
         }
     }
 
-    public IEnumerable<StProgramDTO> GetAll()
-        => _stPrograms.OrderBy(sp => sp.Name);
+    public List<StProgramDTO> GetAll()
+        => _stPrograms.OrderBy(sp => sp.Name).ToList();
 }
