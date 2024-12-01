@@ -13,6 +13,9 @@ public class FilterViewModel : ViewModelBase
 {
     private List<StProgram> _programList;
     private List<string> _studyPrograms;
+
+    public MenuBarViewModel MenuBarViewModel { get; set; }
+
     public List<string> StudyPrograms
     {
         get => _studyPrograms;
@@ -102,7 +105,7 @@ public class FilterViewModel : ViewModelBase
     public ICommand ShowDetailsCommand { get; }
     public ICommand GenereateToDocxCommand { get; }
 
-    public FilterViewModel()
+    public FilterViewModel(MenuBarViewModel menuBarViewModel)
     {
         _studyPrograms = new List<string>();
         _themesYears = new List<int>();
@@ -112,6 +115,8 @@ public class FilterViewModel : ViewModelBase
         ShowDetailsCommand = new RelayCommand(ShowDetails);
         GenereateToDocxCommand = new RelayCommand(() => SaveToDocx());
         EnableButtons = false;
+
+        MenuBarViewModel = menuBarViewModel;
         InitializeAsync();
     }
 
@@ -134,17 +139,15 @@ public class FilterViewModel : ViewModelBase
         sfd.CheckPathExists = true;
         sfd.ShowDialog();
 
-        
-            using (HttpClient httpClient = new HttpClient())
-            {
-                string apiURL = "https://localhost:7066/theme/theme2docx/11311";
+        using (HttpClient httpClient = new HttpClient())
+        {
+            string apiURL = "https://localhost:7066/theme/theme2docx/11311";
 
-                var response = await httpClient.GetAsync(apiURL);
+            var response = await httpClient.GetAsync(apiURL);
 
-                byte[] fileBytes = await response.Content.ReadAsByteArrayAsync();
-                await File.WriteAllBytesAsync(sfd.FileName, fileBytes);
-            }    
-        
+            byte[] fileBytes = await response.Content.ReadAsByteArrayAsync();
+            await File.WriteAllBytesAsync(sfd.FileName, fileBytes);
+        }    
     }
 
     private async Task InitializeAsync()

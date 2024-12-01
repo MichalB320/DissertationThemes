@@ -10,9 +10,9 @@ public class MainViewModel : ViewModelBase
 {
     public ViewModelBase CurrentViewModel { get; set; }
 
-    public MainViewModel()
+    public MainViewModel(MenuBarViewModel menuBarViewModel)
     {
-        CurrentViewModel = new FilterViewModel();
+        CurrentViewModel = new FilterViewModel(menuBarViewModel);
 
     }
     private void OnCurrentViewModelChanged()

@@ -22,10 +22,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Menu Grid.Row="0">
-            <MenuItem Header="File"/>
-            <MenuItem Header="Help"/>
-        </Menu>
+        <components:MenuBar Grid.Row="0" DataContext="{Binding MenuBarViewModel}"/>
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -109,8 +106,6 @@
                 </StackPanel>
             </Grid>
             
-
-
         </Grid>
 
     </Grid>
