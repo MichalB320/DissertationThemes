@@ -140,9 +140,11 @@ public class FilterViewModel : ViewModelBase
         sfd.CheckPathExists = true;
         sfd.ShowDialog();
 
+        int themeId = SelectedTheme.Id;
+
         using (HttpClient httpClient = new HttpClient())
         {
-            string apiURL = "https://localhost:7066/theme/theme2docx/11311";
+            string apiURL = $"https://localhost:7066/theme/theme2docx/{themeId}";
 
             var response = await httpClient.GetAsync(apiURL);
 
@@ -194,7 +196,6 @@ public class FilterViewModel : ViewModelBase
             
             if (yearsResponse != null)
                 _themesYears.AddRange(yearsResponse);
-
         }
     }
 
@@ -204,7 +205,7 @@ public class FilterViewModel : ViewModelBase
 
         try
         {
-            using (var httpClient = new HttpClient(/*handler*/))
+            using (var httpClient = new HttpClient())
             {
                 var response = await httpClient.GetAsync(apiUrl);
 

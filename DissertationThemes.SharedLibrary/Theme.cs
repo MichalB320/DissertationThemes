@@ -4,6 +4,7 @@ namespace DissertationThemes.SharedLibrary;
 
 public class Theme
 {
+    [JsonPropertyName("id")]
     public int Id { get; set; }
 
     [JsonPropertyName("name")]
@@ -16,8 +17,10 @@ public class Theme
     [JsonPropertyName("isExternalStudy")]
     public bool IsExternalStudy { get; set; }
 
+    [JsonPropertyName("researchType")]
     public ResearchType ResearchType { get; set; }
 
+    [JsonPropertyName("description")]
     public string Description { get; set; }
 
     [JsonPropertyName("created")]

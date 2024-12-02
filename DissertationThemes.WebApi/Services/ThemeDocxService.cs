@@ -79,7 +79,7 @@ public class ThemeDocxService
                     document.ReplaceText("#=ResearchType=#", "aplikovaný výskum");
                     break;
                 case ResearchType.AppliedResearchExpDevelopment:
-                    document.ReplaceText("#=ResearchType=#", "aplikovaný experimentálny výskum");
+                    document.ReplaceText("#=ResearchType=#", "aplikovaný výskum a experimentálny vývoj");
                     break;
                 case ResearchType.BasicResearch:
                     document.ReplaceText("#=ResearchType=#", "základný výskum");
