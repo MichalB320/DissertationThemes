@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Windows.Input;
@@ -35,6 +36,12 @@ public class MenuBarViewModel : ViewModelBase
             var response = await httpClient.GetAsync(apiURL);
             byte[] fileBytes = await response.Content.ReadAsByteArrayAsync();
             await File.WriteAllBytesAsync(sfd.FileName, fileBytes);
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = sfd.FileName,
+                UseShellExecute = true 
+            });
         }
     }
 

@@ -2,6 +2,7 @@
 using DissertationThemes.SharedLibrary;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Text.Json;
@@ -147,6 +148,12 @@ public class FilterViewModel : ViewModelBase
 
             byte[] fileBytes = await response.Content.ReadAsByteArrayAsync();
             await File.WriteAllBytesAsync(sfd.FileName, fileBytes);
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = sfd.FileName,
+                UseShellExecute = true 
+            });
         }    
     }
 
