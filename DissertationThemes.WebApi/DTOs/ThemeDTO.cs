@@ -7,6 +7,8 @@ public class ThemeDTO
     public int Id { get; set; }
     public string? Name { get; set; }
 
+    public string Supervisor {  get; set; }
+    public int StProgramId { get; set; }
 
     public bool IsFullTimeStudy { get; set; }
     public bool IsExternalStudy { get; set; }

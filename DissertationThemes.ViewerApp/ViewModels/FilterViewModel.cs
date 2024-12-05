@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using DissertationThemes.SharedLibrary;
+using DissertationThemes.WebApi.DTOs;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -49,8 +50,8 @@ public class FilterViewModel : ViewModelBase
         }
     }
 
-    private Theme _selectedTheme;
-    public Theme SelectedTheme 
+    private ThemeSupDTO _selectedTheme;
+    public ThemeSupDTO SelectedTheme 
     {
         get => _selectedTheme;
         set
@@ -89,8 +90,8 @@ public class FilterViewModel : ViewModelBase
         }
     }
 
-    private ObservableCollection<Theme> _themes;
-    public ObservableCollection<Theme> Themes
+    private ObservableCollection<ThemeSupDTO> _themes;
+    public ObservableCollection<ThemeSupDTO> Themes
     {
         get => _themes;
         set
@@ -110,7 +111,7 @@ public class FilterViewModel : ViewModelBase
     {
         _studyPrograms = new List<string>();
         _themesYears = new List<int>();
-        _themes = new ObservableCollection<Theme>();
+        _themes = new ObservableCollection<ThemeSupDTO>();
 
         ClearCommand = new RelayCommand(() => { SelectedStudyProgram = null; SelectedYear = null; });
         ShowDetailsCommand = new RelayCommand(ShowDetails);
@@ -123,6 +124,7 @@ public class FilterViewModel : ViewModelBase
 
     private void ShowDetails()
     {
+        var selectedST = SelectedStudyProgram;
         DetailViewModel detailViewModel = new DetailViewModel(SelectedTheme);
         DetailWindow detailWin = new DetailWindow()
         {
@@ -173,7 +175,7 @@ public class FilterViewModel : ViewModelBase
         {
             var response = await httpClient.GetAsync(apiURL);
             var jsonResponse = await response.Content.ReadAsStringAsync();
-            var themesResponse = JsonSerializer.Deserialize<List<Theme>>(jsonResponse);
+            var themesResponse = JsonSerializer.Deserialize<List<ThemeSupDTO>>(jsonResponse);
 
             if (themesResponse != null)
             {

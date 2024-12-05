@@ -64,7 +64,7 @@
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Theme" DisplayMemberBinding="{Binding Name}" />
-                                <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Supervisor}" />
+                                <GridViewColumn Header="Name" DisplayMemberBinding="{Binding FullName}" />
                                 <GridViewColumn Header="FullTimeStudy">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>

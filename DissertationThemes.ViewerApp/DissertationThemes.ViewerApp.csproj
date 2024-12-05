@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DissertationThemes.ImporterApp\DissertationThemes.ImporterApp.csproj" />
+    <ProjectReference Include="..\DissertationThemes.WebApi\DissertationThemes.WebApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>

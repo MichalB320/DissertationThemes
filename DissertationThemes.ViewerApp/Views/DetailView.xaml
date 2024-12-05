@@ -8,7 +8,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <Style TargetType="TextBlock">
-            <Setter Property="Margin" Value="0,5"/>
+            <Setter Property="Margin" Value="5,5"/>
         </Style>
     </UserControl.Resources>
     <Grid Background="White" Margin="10">
@@ -48,7 +48,7 @@
         <TextBlock Text="{Binding IsExternalStudy}" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center"/>
 
         <TextBlock Text="Research type:" Grid.Row="6" Grid.Column="0" VerticalAlignment="Center" FontWeight="Bold"/>
-        <TextBlock Text="{Binding ResearchType}" Grid.Row="6" Grid.Column="1" VerticalAlignment="Center"/>
+        <TextBlock Text="{Binding ResearchTypeP}" Grid.Row="6" Grid.Column="1" VerticalAlignment="Center"/>
 
         <TextBlock Text="Description:" Grid.Row="7" Grid.Column="0" VerticalAlignment="Top" FontWeight="Bold"/>
         <TextBox Text="{Binding Description}" Grid.Row="7" Grid.Column="1" Margin="5,5"  AcceptsReturn="True" VerticalScrollBarVisibility="Visible"  Height="150" TextWrapping="Wrap"/>

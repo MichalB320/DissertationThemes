@@ -17,7 +17,7 @@ public class ThemeService
     {
         using (var db = new DisertationThemesDbContext())
         {
-            var theme = db.Themes.FirstOrDefault(p => p.Id == id);
+            var theme = db.Themes.Include(s => s.Supervisor).Include(p => p.StProgram).FirstOrDefault(p => p.Id == id);
 
             if (theme == null)
                 return null;
@@ -26,8 +26,8 @@ public class ThemeService
             {
                 Id = theme.Id,
                 Name = theme.Name,
-                //TODO: supervisor
-                //TODO: supervisorId
+                Supervisor = theme.Supervisor.FullName,
+                StProgramId = theme.StProgram.Id,
                 IsFullTimeStudy = theme.IsFullTimeStudy,
                 IsExternalStudy = theme.IsExternalStudy,
                 ResearchType = theme.ResearchType,
