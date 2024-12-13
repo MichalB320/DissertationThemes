@@ -17,8 +17,4 @@
     <ProjectReference Include="..\DissertationThemes.WebApi\DissertationThemes.WebApi.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>

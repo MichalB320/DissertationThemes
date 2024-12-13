@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DissertationThemes.ViewerApp.Models;
+using DissertationThemes.ViewerApp.Services;
 
 namespace DissertationThemes.ViewerApp.ViewModels;
 
@@ -10,14 +7,14 @@ public class MainViewModel : ViewModelBase
 {
     public ViewModelBase CurrentViewModel { get; set; }
 
-    public MainViewModel(MenuBarViewModel menuBarViewModel)
+    public MainViewModel(MenuBarViewModel menuBarViewModel, FilterModel filterModel, DataService dataService)
     {
-        CurrentViewModel = new FilterViewModel(menuBarViewModel);
+        CurrentViewModel = new FilterViewModel(menuBarViewModel, filterModel, dataService);
 
     }
-    private void OnCurrentViewModelChanged()
-    {
-        OnPropertyChanged(nameof(CurrentViewModel));
-    }
 
+    //private void OnCurrentViewModelChanged()
+    //{
+    //    OnPropertyChanged(nameof(CurrentViewModel));
+    //}
 }

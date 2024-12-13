@@ -1,12 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using DissertationThemes.SharedLibrary;
+using DissertationThemes.ViewerApp.Models;
+using DissertationThemes.ViewerApp.Services;
 using DissertationThemes.WebApi.DTOs;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Net.Http;
-using System.Text.Json;
 using System.Windows.Input;
 
 namespace DissertationThemes.ViewerApp.ViewModels;
@@ -14,39 +14,30 @@ namespace DissertationThemes.ViewerApp.ViewModels;
 public class FilterViewModel : ViewModelBase
 {
     private List<StProgram> _programList;
-    private List<string> _studyPrograms;
+    private FilterModel _filterModel;
+    private DataService _dataService;
 
     public MenuBarViewModel MenuBarViewModel { get; set; }
 
-    public List<string> StudyPrograms
+    public int? SelectedYear
     {
-        get => _studyPrograms;
+        get => _filterModel.SelectedYear;
         set
         {
-            _studyPrograms = value;
-            OnPropertyChanged(nameof(StudyPrograms));
+            _filterModel.SelectedYear = value; OnPropertyChanged(nameof(SelectedYear)); FilterThemes(SelectedYear); 
         }
     }
 
-    private int? _selectedYear;
-    public int? SelectedYear
-    {
-        get => _selectedYear;
-        set
-        {
-            _selectedYear = value; OnPropertyChanged(nameof(SelectedYear)); FilterThemes(SelectedYear);
-        }
-    }
-    private string _selectedStudyProgram;
     public string SelectedStudyProgram
     {
-        get => _selectedStudyProgram;
+        get => _filterModel.SelectedStudyProgram;
         set
         {
-            _selectedStudyProgram = value;
+            _filterModel.SelectedStudyProgram = value;
             OnPropertyChanged(nameof(SelectedStudyProgram));
             int stProgramId = _programList.Where(c => c.Name == SelectedStudyProgram).Select(s => s.Id).FirstOrDefault();
             FilterThemes(stProgramId: stProgramId);
+            _filterModel.SelectedStudyProgramId = stProgramId;
         }
     }
 
@@ -65,53 +56,20 @@ public class FilterViewModel : ViewModelBase
         }
     }
 
-    private async void FilterThemes(int? year = null, int? stProgramId = null)
-    {
-        Themes.Clear();
-        if (year.HasValue && stProgramId.HasValue)
-           await LoadAllThemes($"https://localhost:7066/theme/themes?year={year}&stProgramId={stProgramId}");
-        else if (year.HasValue && !stProgramId.HasValue)
-            await LoadAllThemes($"https://localhost:7066/theme/themes?year={year}");
-        else if (!year.HasValue && stProgramId.HasValue)
-            await LoadAllThemes($"https://localhost:7066/theme/themes?stProgramId={stProgramId}");
-        else if (!year.HasValue && !stProgramId.HasValue)
-            await LoadAllThemes("https://localhost:7066/theme/themes");
-    }
-
-    private List<int> _themesYears;
-
-    public List<int> ThemesYears
-    {
-        get => _themesYears;
-        set 
-        { 
-            _themesYears = value; 
-            OnPropertyChanged(nameof(ThemesYears));
-        }
-    }
-
-    private ObservableCollection<ThemeSupDTO> _themes;
-    public ObservableCollection<ThemeSupDTO> Themes
-    {
-        get => _themes;
-        set
-        {
-            _themes = value;
-            OnPropertyChanged(nameof(Themes));
-        }
-    }
-
-    public int Count { get => _themes.Count; }
+    public List<string> StudyPrograms { get; set; }
+    public List<int> ThemesYears { get; set; }
+    public ObservableCollection<ThemeSupDTO> Themes { get; set; }
+    public int Count { get => Themes.Count; }
     public bool EnableButtons { get; set; }
     public ICommand ClearCommand { get; }
     public ICommand ShowDetailsCommand { get; }
     public ICommand GenereateToDocxCommand { get; }
 
-    public FilterViewModel(MenuBarViewModel menuBarViewModel)
+    public FilterViewModel(MenuBarViewModel menuBarViewModel, FilterModel filterModel, DataService dataService)
     {
-        _studyPrograms = new List<string>();
-        _themesYears = new List<int>();
-        _themes = new ObservableCollection<ThemeSupDTO>();
+        StudyPrograms = new List<string>();
+        ThemesYears = new List<int>();
+        Themes = new ObservableCollection<ThemeSupDTO>();
 
         ClearCommand = new RelayCommand(() => { SelectedStudyProgram = null; SelectedYear = null; });
         ShowDetailsCommand = new RelayCommand(ShowDetails);
@@ -119,6 +77,10 @@ public class FilterViewModel : ViewModelBase
         EnableButtons = false;
 
         MenuBarViewModel = menuBarViewModel;
+
+        _filterModel = filterModel;
+        _dataService = dataService;
+
         InitializeAsync();
     }
 
@@ -144,21 +106,14 @@ public class FilterViewModel : ViewModelBase
 
         int themeId = SelectedTheme.Id;
 
-        using (HttpClient httpClient = new HttpClient())
+        byte[] fileBytes = await _dataService.LoadDataAsync<byte[]>($"https://localhost:7066/theme/theme2docx/{themeId}");
+        await File.WriteAllBytesAsync(sfd.FileName, fileBytes);
+
+        Process.Start(new ProcessStartInfo
         {
-            string apiURL = $"https://localhost:7066/theme/theme2docx/{themeId}";
-
-            var response = await httpClient.GetAsync(apiURL);
-
-            byte[] fileBytes = await response.Content.ReadAsByteArrayAsync();
-            await File.WriteAllBytesAsync(sfd.FileName, fileBytes);
-
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = sfd.FileName,
-                UseShellExecute = true 
-            });
-        }    
+            FileName = sfd.FileName,
+            UseShellExecute = true
+        });
     }
 
     private async Task InitializeAsync()
@@ -168,65 +123,47 @@ public class FilterViewModel : ViewModelBase
         await LoadAllThemes("https://localhost:7066/theme/themes");
     }
 
+    private async void FilterThemes(int? year = null, int? stProgramId = null)
+    {
+        Themes.Clear();
+        if (year.HasValue && stProgramId.HasValue)
+            await LoadAllThemes($"https://localhost:7066/theme/themes?year={year}&stProgramId={stProgramId}");
+        else if (year.HasValue && !stProgramId.HasValue)
+            await LoadAllThemes($"https://localhost:7066/theme/themes?year={year}");
+        else if (!year.HasValue && stProgramId.HasValue)
+            await LoadAllThemes($"https://localhost:7066/theme/themes?stProgramId={stProgramId}");
+        else if (!year.HasValue && !stProgramId.HasValue)
+            await LoadAllThemes("https://localhost:7066/theme/themes");
+    }
+
     private async Task LoadAllThemes(string apiURL)
     {
-
-        using (var httpClient = new HttpClient())
+        var themesResponse = await _dataService.LoadDataAsync<List<ThemeSupDTO>>(apiURL);
+        
+        if (themesResponse != null)
         {
-            var response = await httpClient.GetAsync(apiURL);
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-            var themesResponse = JsonSerializer.Deserialize<List<ThemeSupDTO>>(jsonResponse);
-
-            if (themesResponse != null)
-            {
-                foreach (var theme in themesResponse) 
-                    Themes.Add(theme);
-            }
+            foreach (var theme in themesResponse)
+                Themes.Add(theme);            
         }
+
         OnPropertyChanged(nameof(Count));
     }
 
     private async Task LoadThemseYears()
     {
-        string apiURL = "https://localhost:7066/theme/themesyears";
-
-        using (var httpClient = new HttpClient())
-        {
-            var response = await httpClient.GetAsync(apiURL);
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-            var yearsResponse = JsonSerializer.Deserialize<List<int>>(jsonResponse);
-            
-            if (yearsResponse != null)
-                _themesYears.AddRange(yearsResponse);
-        }
+        var yearsResponse = await _dataService.LoadDataAsync<List<int>>("https://localhost:7066/theme/themesyears");
+        ThemesYears.AddRange(yearsResponse);
     }
 
     private async Task LoadStudyPrograms()
     {
-        string apiUrl = "https://localhost:7066/stprograms";
+        var studyPrograms = await _dataService.LoadDataAsync<List<StProgram>>("https://localhost:7066/stprograms");
+        _programList = studyPrograms;
 
-        try
+        if (studyPrograms != null)
         {
-            using (var httpClient = new HttpClient())
-            {
-                var response = await httpClient.GetAsync(apiUrl);
-
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-
-                var studyPrograms = JsonSerializer.Deserialize<List<StProgram>>(jsonResponse);
-
-                _programList = studyPrograms;
-
-                if (studyPrograms != null)
-                {
-                    _studyPrograms.Clear();
-                    _studyPrograms.AddRange(studyPrograms.Select(s => s.Name));
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Chyba pri načítaní údajov: {ex.Message}");
+            StudyPrograms.Clear();
+            StudyPrograms.AddRange(studyPrograms.Select(s => s.Name));
         }
     }
 }

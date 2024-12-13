@@ -1,4 +1,5 @@
 ﻿using DissertationThemes.SharedLibrary;
+using System.Text.RegularExpressions;
 
 namespace DissertationThemes.ImporterApp;
 
@@ -63,7 +64,7 @@ public class IS
         Theme theme = new Theme
         {
             Created = new DateTime(new DateOnly(year, month, day), new TimeOnly(hour, minute)),
-            Description = description,
+            Description = Regex.Replace(description, "<br>", Environment.NewLine), //description,
             IsExternalStudy = isExternalStudy,
             IsFullTimeStudy = isFullTimeStudy,
             Name = paName,
